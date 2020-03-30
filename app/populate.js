@@ -1,7 +1,7 @@
 import Voting from './artifacts/Voting';
+import buildProposal from './proposal';
 import {address} from './config';
 import {ethers} from 'ethers';
-import "./proposal.css";
 
 const provider = new ethers.providers.Web3Provider(web3.currentProvider);
 const contract = new ethers.Contract(address, Voting.abi, provider);
@@ -34,10 +34,7 @@ async function listenForProposals() {
 
 function renderProposals() {
   const container = document.getElementById("container");
-  container.innerHTML = "";
-  proposals.forEach((proposal, id) => {
-    container.innerHTML += getHTML(proposal, id);
-  });
+  container.innerHTML = proposals.map(buildProposal).join("");
   proposals.forEach((proposal, id) => {
     addListeners(id);
   });
@@ -52,22 +49,6 @@ function addListeners(id) {
     const signer = provider.getSigner();
     await contract.connect(signer).castVote(id, false);
   });
-}
-
-function getHTML({ question, yesCount, noCount }, id) {
-  return `
-    <div class="proposal">
-      <div class="question"> ${question} </div>
-      <div class="counts">
-        <div class="yes-count"> Yes: ${yesCount} </div>
-        <div class="no-count"> No: ${noCount} </div>
-      </div>
-      <div class="vote-actions">
-        <div id="yes-${id}" class="button vote-yes"> Vote Yes </div>
-        <div id="no-${id}" class="button vote-no"> Vote No </div>
-      </div>
-    </div>
-  `;
 }
 
 populateProposals();
