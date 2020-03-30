@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx buidler test",
+    "start": "npm run deploy && parcel app/index.html",
     "deploy": "npx buidler compile && npx buidler run scripts/deploy.js"
   },
   "keywords": [],
